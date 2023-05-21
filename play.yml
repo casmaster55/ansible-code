@@ -1,0 +1,32 @@
+---
+- hosts: devserver
+  become: yes
+  ignore_errors: yes
+
+  tasks:
+    - name: Creating user
+      user:
+        name: Casmaster
+        comment: Casmaster Admin
+        shell: /bin/bash
+          #when: ansible_os_family == "Debian"
+    - name: Create file
+      file:
+        path: /tmp/douala.txt
+        state: touch
+        mode: '0600'
+    - name: Create directory
+      file:
+        path: /tmp/door
+        state: directory
+        mode: '0777'
+    - name: install apache
+      yum:
+        name: httpd
+        state: present
+
+    - name: install finger
+      package:
+        name: finger
+        state: present
+                     

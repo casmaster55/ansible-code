@@ -1,0 +1,31 @@
+---
+- hosts: devserver
+  become: yes
+  ignore_errors: yes
+  tasks:
+    - name: install packeges
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - wget
+        - unzip
+        - httpd 
+    - name: downloading website
+      get_url:
+        url: https://github.com/utrains/static-resume/archive/refs/heads/main.zip
+        dest: /tmp 
+    - name: unzip
+      shell:   "unzip /tmp/static-resume-main.zip -d  /tmp"    
+    - name: cp file
+      become: yes
+      copy:
+        src: /tmp/static-resume-main/iPortfolio/
+        dest: /var/www/html/
+        remote_src: yes  
+        directory_mode:
+    - name: start httpd
+      service:
+        name: httpd
+        enabled: true 
+        state: started 
